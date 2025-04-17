@@ -1,6 +1,21 @@
 import styles from './App.module.css'
 import {useState} from "react";
 
+const convertValidDate = (timestamp) => {
+    const date = new Date(timestamp);
+    const pad = (n) => n.toString().padStart(2, '0');
+
+    const day = pad(date.getDate());
+    const month = pad(date.getMonth() + 1);
+    const year = date.getFullYear();
+
+    const hours = pad(date.getHours());
+    const minutes = pad(date.getMinutes());
+    const seconds = pad(date.getSeconds());
+
+    return `${day}.${month}.${year} ${hours}:${minutes}:${seconds}`;
+}
+
 function App() {
 
     const [value, setValue] = useState('');
@@ -21,7 +36,7 @@ function App() {
         if (!error) {
             setList([
                 ...list,
-                {id: Date.now(), value}
+                {id: Date.now(), value, dateCreated: convertValidDate(Date.now())}
             ]);
             setValue('');
             setError('');
@@ -58,7 +73,10 @@ function App() {
                 <h2 className={styles["list-heading"]}>Список:</h2>
                 {list.length < 1 && <p className={styles["no-margin-text"]}>Нет добавленных элементов</p>}
                 <ul className={styles.list}>
-                    {list.length > 0 && list.map(({id, value}) => (<li className={styles["list-item"]} key={id}>{value}т</li>))
+                    {list.length > 0 && list.map(({id, value, dateCreated}) =>
+                        (<li className={styles["list-item"]} key={id}>
+                            <strong>{value}</strong> {dateCreated}
+                        </li>))
                     }
                 </ul>
             </div>
